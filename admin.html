@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Pizza Hut - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="p-4 max-w-xl mx-auto text-gray-900">
+
+  <h1 class="text-3xl font-bold mb-4">📋 Incoming Orders</h1>
+  <div id="orders" class="space-y-4"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js"></script>
+
+  <script>
+    const container = document.getElementById("orders");
+
+    db.ref("orders").on("value", snapshot => {
+      container.innerHTML = "";
+      const data = snapshot.val();
+
+      if (!data) {
+        container.innerHTML = "<p>No orders yet.</p>";
+        return;
+      }
+
+      Object.entries(data).reverse().forEach(([id, order]) => {
+        const div = document.createElement("div");
+        div.className = "bg-white rounded shadow p-4";
+
+        div.innerHTML = `
+          <h2 class="font-bold text-lg mb-2">Table #${order.table}</h2>
+          <ul class="mb-2">
+            ${order.items.map(i => `<li>${i.qty} x ${i.name} (${i.price} MAD)</li>`).join("")}
+          </ul>
+          <p class="font-semibold">Total: ${order.total} MAD</p>
+          <p class="text-sm text-gray-500">${new Date(order.timestamp).toLocaleString()}</p>
+        `;
+
+        container.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>

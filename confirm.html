@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pizza Hut - Order Confirmed</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-green-50 text-green-900 p-6 max-w-md mx-auto text-center">
+
+  <h1 class="text-4xl font-bold mb-4">✅ Thank you for your order!</h1>
+  <p class="mb-6">Your order has been received and is being prepared.</p>
+
+  <div id="order-summary" class="bg-white rounded shadow p-4 text-left"></div>
+
+  <button onclick="window.location.href='index.html'" class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+    Back to Menu
+  </button>
+
+  <script>
+    // Retrieve order data from localStorage
+    const order = JSON.parse(localStorage.getItem("lastOrder"));
+    const summaryDiv = document.getElementById("order-summary");
+
+    if (!order) {
+      summaryDiv.innerHTML = "<p>No order data found.</p>";
+    } else {
+      let html = `<p><strong>Table Number:</strong> ${order.table}</p>`;
+      html += "<h3 class='font-semibold mt-4 mb-2'>Items:</h3><ul>";
+      order.items.forEach(item => {
+        html += `<li>${item.qty} x ${item.name} (${item.price} MAD each)</li>`;
+      });
+      html += "</ul>";
+      html += `<p class="font-bold mt-4">Total: ${order.total} MAD</p>`;
+      summaryDiv.innerHTML = html;
+    }
+
+    // Clear lastOrder from storage (optional)
+    localStorage.removeItem("lastOrder");
+  </script>
+</body>
+</html>
